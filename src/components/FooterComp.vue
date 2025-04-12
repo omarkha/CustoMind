@@ -16,7 +16,7 @@
               v-model="email"
             />
             <button type="submit">
-              <font-awesome-icon icon="fa-solid fa-paper-plane" />
+              <font-awesome-icon :icon="['fas', 'fa-paper-plane']" />
             </button>
           </form>
         </div>
@@ -100,9 +100,16 @@ import {
   faTwitter,
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 // Add icons to library
-library.add(faInstagram, faTiktok, faYoutube, faLinkedin, faTwitter);
+library.add(
+  faInstagram,
+  faTiktok,
+  faYoutube,
+  faLinkedin,
+  faTwitter,
+  faPaperPlane
+);
 const email = ref("");
 
 const subscribeNewsletter = () => {

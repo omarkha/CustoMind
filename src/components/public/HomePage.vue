@@ -6,35 +6,51 @@
         <h1 class="brand-name">CustoMind</h1>
         <h2>Transform Customer Data Into Competitive Advantage</h2>
         <hr class="divider" />
-        <p class="value-prop">
-          Unlock the power of behavioral intelligence with our AI-driven
-          customer mapping platform.
-          <span class="highlight">Go beyond demographics</span> to understand
-          the why behind customer decisions and create experiences that drive
-          loyalty and revenue.
-        </p>
+
+        <!-- Value Propositions -->
+        <div class="value-props">
+          <p v-motion="valuePropAnimation" class="value-prop">
+            Unlock the power of behavioral intelligence with our AI-driven
+            customer mapping platform.
+
+            <span class="highlight">Go beyond demographics</span> to understand
+            the why behind customer decisions and create experiences that drive
+            loyalty and revenue.
+          </p>
+        </div>
+
         <div class="btn-group">
-          <button id="cta-second" class="btn-secondary">
+          <button
+            id="cta-second"
+            class="btn-secondary"
+            v-motion="buttonAnimation"
+          >
             <font-awesome-icon :icon="['fas', 'map-marked-alt']" /> See Platform
             Demo
           </button>
-          <button id="cta-first" class="btn-primary">
+          <button
+            id="cta-first"
+            class="btn-primary"
+            v-motion="buttonAnimation"
+            :delay="100"
+          >
             <font-awesome-icon :icon="['fas', 'rocket']" /> Start Your Free
             Trial
           </button>
         </div>
         <div class="trust-signals">
-          <div class="trust-badge">
+          <div class="trust-badge" v-motion="trustBadgeAnimation">
             <font-awesome-icon :icon="['fas', 'shield-alt']" />
             Enterprise-Grade Security
           </div>
-          <div class="trust-badge">
+          <div class="trust-badge" v-motion="trustBadgeAnimation" :delay="100">
             <font-awesome-icon :icon="['fas', 'chart-line']" /> Proven ROI
           </div>
         </div>
       </div>
       <div class="brand-visual">
         <img
+          v-motion="parallaxAnimation"
           src="@/assets/brain.jpg"
           alt="AI-powered customer intelligence visualization"
           class="hero-image"
@@ -43,15 +59,22 @@
       </div>
     </div>
 
-    <!-- Value Proposition Section -->
+    <!-- Services Section -->
     <div class="services">
-      <h2 class="section-title">360° Customer Intelligence</h2>
-      <p class="section-subtitle">
+      <h2 class="section-title" v-motion="sectionTitleAnimation">
+        360° Customer Intelligence
+      </h2>
+      <p class="section-subtitle" v-motion="sectionSubtitleAnimation">
         Combine multiple data dimensions for complete customer understanding
       </p>
 
       <div class="services-grid">
-        <div class="service" v-for="service in services" :key="service.title">
+        <div
+          class="service"
+          v-for="(service, index) in services"
+          :key="service.title"
+          v-motion="serviceCardAnimation(index)"
+        >
           <div class="service-header">
             <div class="icon-wrapper">
               <font-awesome-icon :icon="service.icon" class="service-icon" />
@@ -63,7 +86,13 @@
           <ul class="features">
             <li v-for="feature in service.features" :key="feature">
               <font-awesome-icon :icon="['fas', 'check-circle']" />
-              {{ feature }}
+              <template v-if="feature.includes(':')">
+                <strong>{{ feature.split(":")[0] }}</strong
+                >: {{ feature.split(":")[1] }}
+              </template>
+              <template v-else>
+                {{ feature }}
+              </template>
             </li>
           </ul>
         </div>
@@ -75,20 +104,20 @@
 <script setup>
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { ref } from "vue";
 
-// Import solid icons
+// Font Awesome icons setup
 import {
-  faMapMarkedAlt, // Alternative to map-location-dot
+  faMapMarkedAlt,
   faRocket,
-  faShieldAlt, // Alternative to shield-check
+  faShieldAlt,
   faChartLine,
-  faCheckCircle, // Alternative to circle-check
+  faCheckCircle,
   faGlobe,
   faBrain,
   faComments,
 } from "@fortawesome/free-solid-svg-icons";
 
-// Add icons to library
 library.add(
   faMapMarkedAlt,
   faRocket,
@@ -100,19 +129,64 @@ library.add(
   faComments
 );
 
+// Motion animations
+const valuePropAnimation = ref({
+  initial: { opacity: 0, y: 20 },
+  enter: { opacity: 1, y: 0, transition: { duration: 500 } },
+});
+
+const buttonAnimation = ref({
+  initial: { opacity: 0, y: 20 },
+  enter: { opacity: 1, y: 0, transition: { duration: 500 } },
+});
+
+const trustBadgeAnimation = ref({
+  initial: { opacity: 0, scale: 0.8 },
+  enter: { opacity: 1, scale: 1, transition: { duration: 500 } },
+});
+
+const parallaxAnimation = ref({
+  initial: { y: -50 },
+  visible: { y: 0 },
+  hovered: { y: -10 },
+  tapped: { y: -5 },
+  transition: { type: "spring", stiffness: 300, damping: 20 },
+});
+
+const sectionTitleAnimation = ref({
+  initial: { opacity: 0, y: 20 },
+  visibleOnce: { opacity: 1, y: 0, transition: { duration: 500 } },
+});
+
+const sectionSubtitleAnimation = ref({
+  initial: { opacity: 0, y: 20 },
+  visibleOnce: { opacity: 1, y: 0, transition: { duration: 500, delay: 100 } },
+});
+
+const serviceCardAnimation = (index) => ({
+  initial: { opacity: 0, y: 50 },
+  visibleOnce: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 500,
+      delay: 100 * index,
+    },
+  },
+});
+
+// Services data
 const services = [
   {
     icon: ["fas", "globe"],
     title: "Demographic Profiling",
     description: "Understand who your customers are",
     features: [
-      "Geographic distribution",
-      "Income & spending capacity",
-      "Education & career levels",
-      "Life stage segmentation",
-      "Cultural background analysis",
-      "Household composition",
-      "Wealth indicators",
+      "Location: Geographic distribution analysis",
+      "Income: Spending capacity segmentation",
+      "Education: Career level correlations",
+      "Life Stage: Family and age grouping",
+      "Culture: Background and preference mapping",
     ],
   },
   {
@@ -120,13 +194,11 @@ const services = [
     title: "Psychographic Insights",
     description: "Discover why they make decisions",
     features: [
-      "Values & motivations",
-      "Lifestyle preferences",
-      "Personality archetypes",
-      "Brand affinities",
-      "Pain points & frustrations",
-      "Aspirations & goals",
-      "Media consumption",
+      "Values: Core motivation identification",
+      "Lifestyle: Daily habit patterns",
+      "Personality: Archetype classification",
+      "Brands: Affinity scoring",
+      "Pain Points: Frustration hotspots",
     ],
   },
   {
@@ -134,13 +206,11 @@ const services = [
     title: "Behavioral Mapping",
     description: "Learn how they engage with your brand",
     features: [
-      "Purchase journey tracking",
-      "Channel preferences",
-      "Response patterns",
-      "Feedback sentiment",
-      "Loyalty behaviors",
-      "Influence networks",
-      "Predictive engagement",
+      "Journeys: Purchase path visualization",
+      "Channels: Preferred interaction points",
+      "Responses: Campaign reaction patterns",
+      "Feedback: Sentiment analysis",
+      "Loyalty: Retention drivers",
     ],
   },
 ];
@@ -155,6 +225,21 @@ const services = [
   color: #fff;
   overflow-x: hidden;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.value-props {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.features {
+  li {
+    strong {
+      color: hsl(55, 100%, 50%);
+      font-weight: 600;
+    }
+  }
 }
 
 .highlight {
